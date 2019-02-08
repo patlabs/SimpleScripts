@@ -9,17 +9,26 @@ fullName = "$firstName $lastName"
 
 userCheck=$(grep "$fullName" /etc/passwd | awk -F: '{print $5}' | cut -d "," -f1)
 
-if [ $fullName != $userCheck ]; then
+if [ "$fullName" != "$userCheck" ]; then
 	echo "User $fullName is good to use"
 
-	read -p "Please Enter a new Username for the user ...>" CrUser
+	read -p "Please Enter a new Username for the user ...> " CrUser
 
 	/usr/sbin/useradd -c "$fullName" -m -s /bin/bash -d /home/$CrUser
 
-	alert="User $CrUser Has been Successfully Added"
+	echo "User $CrUser Has been Successfully Added"
 	
-	read -p "Press Enter to Continue"
+	read -p "Press ENTER to continue"
+
+elif ["$fullName" = "$userCheck"]; then
+
+	echo "$fullName already exists in the system"
+	
+	read -p "Press ENTER to continue"
+
 else
+	
+	echo "Something went wrong"
 
 fi
 

@@ -34,7 +34,7 @@ X) Exit
 ***************************************
 "
 
-read -p "Please select an option	...>" addremOption
+read -p "Please select an option	...> " addremOption
 
 if [ $addremOption = "1" ]; then
 	echo "option 1"
@@ -45,10 +45,22 @@ elif [ $addremOption = "2" ]; then
 	./AddSudoUser.sh
 	addRemUser
 elif [ $addremOption = "3" ]; then
-	echo "option 3"
-	addRemUser
+	read -p "Enter a username to remove ...> " addremUname
+	read -p "Are you certain you want to remove $addremUname? [y/n]...>" remConf
+	case $remConf in
+		y|Y)	userdel -r $addremUname
+				read -p "$addremUname successfully removed. Press ENTER to continue. "
+				;;
+		n|N)	addRemUser
+				;;
+		*)		read -p "That is not a valid option. Press ENTER to continue"
+				addRemUser
+				;;
+	esac
 elif [ $addremOption = "4" ]; then
-	echo "option 4"
+	var1=$(cat /etc/passwd | awk -F '{print $1}')
+	echo $var1
+	read -p "Press ENTER to continue."
 	addRemUser
 elif [ $addremOption = [mM] ]; then
 	echo "Back to main menu"
@@ -62,31 +74,28 @@ else
 	Please try again"
 fi
 
-
-# case $addremOption in
-	# 1) ./CreateUser.sh
-	# 2) ./CreateSudoUser.sh
-	# 3) 
-	# 4) 
-	# m|M)
-	# x|X)
-# esac
-
-
 }
 
 
 defShell() {
 echo "Default Shell"
+read -p "To be implemented... Press ENTER to continue"
+main_menu
 }
 resetPass() {
 echo "Reset Password"
+read -p "To be implemented... Press ENTER to continue"
+main_menu
 }
 acctLock() {
 echo "Account Lock/Unlock"
+read -p "To be implemented... Press ENTER to continue"
+main_menu
 }
 chName() {
 echo "Change Username"
+read -p "To be implemented... Press ENTER to continue"
+main_menu
 }
 
 ###########################################################
@@ -107,10 +116,10 @@ Welcome to the Linux User Admin Toolkit
 5) Change Username
 
 X) Exit
-***************************************
+
 "
 
-read -p "Please select an option	...>" menuOption
+read -p "Please select an option	...> " menuOption
 
 case $menuOption in
 	1) addRemUser ;;
@@ -118,7 +127,7 @@ case $menuOption in
 	3) resetPass ;;
 	4) acctLock ;;
 	5) chName ;;
-	x|X) read -p "Are you sure you wish to exit? [y/n]	...>" exitOption 
+	x|X) read -p "Are you sure you wish to exit? [y/n]	...> " exitOption 
 		case $exitOption in
 		y|Y) clear
 			exit
