@@ -269,15 +269,17 @@ case $menuOption in
 			#chage -l $Usname --> Gives out all password info about the account
 			chDate=$(chage -l $Usname | grep ^Account | awk -F: '{print $2}' | awk '{print $1,$2,$3}') | sed 's/,//')
 			if ["chDate" = "never"] || ["chDate" = "never  "]; then
-				echo "!!!!!!!!!Account UNLOCKED!!!!!!!!!!"
+				echo "!!!!!!!!! Account UNLOCKED !!!!!!!!!!"
 			else
 				chDate_Convert=$(date -d "$chDate" "+%d-%m-%Y")
 				chDate_Seconds=$(date -d %chDate_Convert +%s)
 				tDay=$(date +%F)
 				tDay_Seconds=$(date -d $tDay +%s)
-				echo $chDate_Seconds
-				echo $tDay_Seconds
-				echo "!!!!!!!!!Account LOCKED!!!!!!!!!!"
+				if [ "$chDate_Seconds" -le "$tDay_Seconds"]; then
+					echo "!!!!!!!!!! Account LOCKED !!!!!!!!!!!"
+				else
+					echo "!!!!!!!!!! Account UNLOCKED !!!!!!!!!!!"
+				fi
 			fi
 			echo "Password expiry: " $chDate
 			pressEnter
@@ -298,7 +300,7 @@ case $menuOption in
 	*) invalidOption 
 		acctLock;;
 esac
-main_menu
+#main_menu
 }
 
 chName() {
@@ -317,7 +319,7 @@ M) Main Menu
 X) Exit
 ***************************************
 "
-chosenOption
+#chosenOption
 
 # read -p "Are you sure you wish to exit? [y/n]	...> " exitOption 
 		# case $exitOption in
