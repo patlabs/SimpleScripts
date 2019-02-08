@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 
 #Main menu needed to choose different account management functions
 #needs a main menu
