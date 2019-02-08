@@ -270,7 +270,13 @@ case $menuOption in
 			chDate=$(chage -l $Usname | grep ^Account | awk -F: '{print $2}' | awk '{print $1,$2,$3}') | sed 's/,//')
 			if ["chDate" = "never"] || ["chDate" = "never  "]; then
 				echo "!!!!!!!!!Account UNLOCKED!!!!!!!!!!"
-			elif
+			else
+				chDate_Convert=$(date -d "$chDate" "+%d-%m-%Y")
+				chDate_Seconds=$(date -d %chDate_Convert +%s)
+				tDay=$(date +%F)
+				tDay_Seconds=$(date -d $tDay +%s)
+				echo $chDate_Seconds
+				echo $tDay_Seconds
 				echo "!!!!!!!!!Account LOCKED!!!!!!!!!!"
 			fi
 			echo "Password expiry: " $chDate
