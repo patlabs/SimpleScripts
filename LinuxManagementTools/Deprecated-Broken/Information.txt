@@ -1,0 +1,1 @@
+These scripts are broken, however are pretty much exactly the same as the ones in the parent directory, the main difference being that they were made on Windows and converted using dos2unix, but they still don't work. If anyone can let me know why, that'd be amazing
