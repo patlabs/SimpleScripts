@@ -50,7 +50,7 @@ if [ $menuOption = "1" ]; then
 	read -p "Enter First Name ...> " firstName
 	read -p "Enter Surname ...> " lastName
 	fullName="$firstName $lastName"
-	userCheck=$(grep "fullName" /etc/passwd | awk -F: '{print $5}' | cut -d "," -f1)
+	userCheck=$(grep "fullName": /etc/passwd | awk -F: '{print $5}' | cut -d "," -f1)
 	if [ "fullName" != "userCheck" ]; then
 		echo "User $fullName is good to use!"
 		read -p "Please enter a username for $fullName ...> " userName
@@ -76,7 +76,7 @@ elif [ $menuOption = "2" ]; then
 	read -p "Enter First Name ...> " firstName
         read -p "Enter Surname ...> " lastName
         fullName="$firstName $lastName"
-        userCheck=$(grep "fullName" /etc/passwd | awk -F: '{print}' | cut -d "," -f1)
+        userCheck=$(grep "fullName": /etc/passwd | awk -F: '{print}' | cut -d "," -f1)
         if [ "fullName" != "userCheck" ]; then
                 echo "User $fullName is good to use!"
                 read -p "Please enter a username for $fullName ...> " userName
@@ -124,9 +124,10 @@ elif [ $menuOption = "5" ]; then
 	addremUser
 elif [[ $menuOption = [mM] ]]; then
 	echo "Back to Main Menu"
+	main_menu
 elif [[ $menuOption = [xX] ]]; then
 	read -p "Exiting... Press Enter to quit"
-#	clear
+	clear
 	exit
 else
 	invalidOption
@@ -321,13 +322,72 @@ esac
 ###########################
 
 chName() {
-# List Usernames
 # Change Username
+# change Full Name
+# menu function
+# exit program function
 
+#read -p "To be implemented... Press ENTER to continue"
+#main_menu
 
-read -p "To be implemented... Press ENTER to continue"
-main_menu
+clear
 
+echo "
+Name Changing Utility
+*************************************
+
+1) Change Username
+2) Change Full Name
+
+M) Main Menu
+X) Exit
+
+*************************************
+"
+chosenOption
+
+case $menuOption in
+	1) read -p "Please Enter username" usName
+	read -p "Please Enter Desired username ...> " chUsName
+	usermod -l $chUsName $usName
+	read -p "Press ENTER to continue"
+	chName ;;
+	2) read -p "Please Enter username ...> " usName
+	fullName=$(grep "$usName": /etc/passwd | awk -F: '{print $5}' | cut -d "," -f1) 
+	echo "The Current Full name of $usName is: $fullName"
+	firstName=$(echo $fullName | awk '{print $1}')
+	lastName=$(echo $fullName | awk '{print $2}')
+	read -p "Change Fist Name [1] Change Last Name [2] Cancel [X] ...> " menuOption
+	case $menuOption in
+		1) read -p "Enter New FIRST name ...> " newfirstName
+		sed -i '/'"$usName"'/s,'"$firstName"','"$newfirstName"',' /etc/passwd
+		vrfyName=$(grep "$usName": /etc/passwd | awk -F: '{print $5}' | cut -d "," -f1)
+		echo "Name changed from $fullName to $vrfyName"
+		read -p "Press ENTER to continue"
+		chName ;;
+		2) read -p "Enter New LAST name ...> " newlastName
+		sed -i '/'"$usName"'/s,'"$lastName"','"$newlastName"',' /etc/passwd
+		vrfyName=$(grep "$usName": /etc/passwd | awk -F: '{print $5}' | cut -d "," -f1)
+		echo "Name changed from $fullName to $vrfyName"
+		read -p "Press ENTER to continue"
+		chName ;;
+		x|X) chName
+		;;
+		*) invalidOption
+		chName;;
+	esac
+	;;
+	m|M) main_menu ;;
+	x|X) read -p "Are you sure you want to exit? [y/n] ...>" exitOption
+	case $exitOption in
+		y|Y) exit ;;
+		n|N) chName ;;
+		*) invalidOption
+		chName ;;
+	esac ;;
+	*) invalidOption
+	chName ;;
+esac
 
 }
 
