@@ -166,17 +166,24 @@ fi
 
 gameKit(){
 
-echo "To be Implemented..."
+echo "To be Implemented... Press ENTER to go back"
 installTools
+
+#add-apt-repository multiverse
+#add-apt-repository ppa:graphics-drivers/ppa
+#apt update
+#apt -y install libgconf-2-4 libappindicator1 steam nvidia-driver-396
+#snap install discord
 
 
 }
 
 uTubeKit(){
 
-echo "To be Implemented..."
+read -p  "To be Implemented... Press ENTER to go back"
 installTools
 
+#apt install -y kdenlive blender
 
 }
 
