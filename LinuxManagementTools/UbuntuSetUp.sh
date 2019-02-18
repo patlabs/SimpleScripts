@@ -16,6 +16,47 @@ rooted=$(whoami)
 #GLOBAL FUNCTIONS
 ###############################
 
+instMSF(){
+
+add-apt-repository pps:webupd8team/java
+apt update
+apt install -y build-essential git libreadline-dev libssl-dev libpq5 libpq5-dev libreadline5 libsqlite3-dev libpcap-dev git-core autoconf postgresql pgadmin3 curl zlib1g-dev libxm12-dev libxslt1-dev libyaml-dev curl zlib1g-dev gawk bison libffi-dev libgdbm-dev libncurses5-dev libtool sqlite3 libgmp-dev gnupg2 dirmgr nmap
+apt update
+apt upgrade -y
+sleep 0.05
+cd ~
+git clone git://github.com/sstephenson/rbenv.git .rbenv
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+exec $SHELL
+sleep 0.05
+git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+#sudo plugin so we can run metasploit as root with "rbenv sudo msfconsole"
+git clone git://github.com/dcarley/rbenv-sudo.git ~/.rbenv/plugins/rbenv-sudo
+exec $SHELL
+RUBYVERSION=$(wget https://raw.githubusercontent.com/rapid7/metasploit-framework/master/.ruby-version -q -O - )
+rbenv install $RUBYVERSION
+rbenv global $RUBYVERSION
+ruby -v
+sleep 0.05
+cd /opt
+git clone https://github.com/rapid7/metasploit-framework.git
+chown -R `whoami` /opt/metasploit-framework
+cd metasploit-framework
+gem install bundler
+bundle install
+sleep 0.05
+cd metasploit-framework
+bash -c 'for MSF in $(ls msf*); do ln -s /opt/metasploit-framework/$MSF /usr/local/bin/$MSF;done'
+sleep 0.05
+echo "export PATH=$PATH:/usr/lib/postgresql/10/bin" >> ~/.bashrc
+. ~/.bashrc
+usermod -a -G postgres `whoami`
+su - `whoami`
+cd /opt/metasploit-framework
+./msfdb init
+}
+
 grubCustom(){
 
 add-apt-repository ppa:danielrichter2007/grub-customizer
@@ -87,6 +128,89 @@ read -p "Finished! Press ENTER to continue"
 
 }
 
+penTest(){
+
+megaUpdate
+
+apt install -y wireshark sqlmap john aircrack-ng wifite
+
+instMSF
+
+}
+
+webDev(){
+
+megaUpdate
+
+apt install -y apache2 mysql-server php php7.0 phpmyadmin
+
+}
+
+softDev(){
+
+echo "To be Implemented..."
+installTools
+
+}
+
+easterEgg(){
+
+echo "
+This option will install these packages:
+----------------------------------------
+cowsay
+fortune-mod
+libaa-bin
+oneko
+xeyes
+bb
+lolcat
+toilet
+bsdgames
+ddate
+figlet
+sysvbanner
+xcowsay
+aview
+espeak
+rig
+-----------------------------------------
+"
+read -p "Are you happy with this? [y/n] ...> " menuOption
+
+if [[ "$menuOption" = "y" ]] || [[ "$menuOption" = "Y" ]]; then
+	clear
+	apt install -y cowsay fortune-mod libaa-bin oneko x11-apps bb lolcat toilet bsdgames ddate figlet sysvbanner xcowsay aview espeak rig
+	sleep 0.05
+	clear
+	figlet "Install Complete! Press ENTER to Continue!"
+	read
+	installTools
+elif [[ "$menuOption" = "n" ]] || [[ "$menuOption" = "N" ]]; then
+	installTools
+else
+	invalidOption
+	installTools
+fi
+
+}
+
+gameKit(){
+
+echo "To be Implemented..."
+installTools
+
+
+}
+
+uTubeKit(){
+
+echo "To be Implemented..."
+installTools
+
+
+}
+
 ###############################
 #TOOL INSTALLER
 ###############################
@@ -98,21 +222,50 @@ installTools(){
 # ************************
 # TOOL LISTS
 # ************************
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+# Pen-testing suite? (metasploit [instMSF], nmap, more to be added)
+# Standard shit I use (apache, json, npm, php, more to be added)
 
-read -p "To be Implemented... Press ENTER to continue"
-main_menu
+clear
+
+echo "
+Tool Installer
+****************************
+
+1) Pen-testing Suite
+2) Web-dev Kit
+3) Software-dev Kit
+4) Easter Eggs
+5) Gaming Kit
+6) YouTuber Kit
+
+M) Main Menu
+X) Exit
+
+****************************
+"
+
+choseanOption
+case $menuOption in
+	1) penTest ;;
+	2) webDev ;;
+	3) softDev ;;
+	4) easterEgg ;;
+	5) gameKit ;;
+	6) uTubeKit;;
+	m|M) main_menu ;;
+	x|X) choseExit
+	case $exitOption in
+		y|Y) exit ;;
+		n|N) installTools ;;
+		*) invalidOption
+		installTools ;;
+	esac ;;
+	*) invalidOption
+	installTools ;;
+esac
+
+#read -p "To be Implemented... Press ENTER to continue"
+#main_menu
 
 }
 
